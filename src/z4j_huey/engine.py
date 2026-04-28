@@ -265,12 +265,28 @@ class HueyEngineAdapter:
         args: tuple[Any, ...] = (),
         kwargs: dict[str, Any] | None = None,
         queue: str | None = None,  # noqa: ARG002 - Huey is single-queue
-        eta: float | None = None,  # noqa: ARG002 - TODO: schedule via Huey delay
-        priority: int | None = None,  # noqa: ARG002
+        eta: float | None = None,
+        priority: int | None = None,
     ) -> CommandResult:
-        """Universal enqueue path - looks up the task callable in
-        Huey's registry by ``name`` and invokes it with the given
-        args/kwargs.
+        """Universal enqueue path - resolve the registry entry for
+        ``name`` and enqueue an instance through Huey's broker.
+
+        v1.1.0 fix: pre-1.1 this called ``callable_obj(*args, **kwargs)``
+        which works only if the registry stores the ``TaskWrapper``
+        decorator. Huey 2.x and 3.x both store the underlying ``Task``
+        **subclass** in ``_registry._registry``, and instantiating the
+        class with task args directly trips ``Task.__init__`` (which
+        accepts ``args``/``kwargs`` as keyword tuples, not splatted
+        task arguments). The brain-side z4j-scheduler 1.1.0 ``schedule.fire``
+        dispatcher relies on this method, so the bug surfaced as
+        ``Task.__init__() got an unexpected keyword argument 'X'`` for
+        every Huey-backed scheduled task. New flow:
+          1. Instantiate the Task class with ``(args=..., kwargs=...,
+             eta=..., priority=...)`` — Huey's documented constructor
+             shape across 2.x and 3.x.
+          2. ``huey.enqueue(task_instance)`` — pushes onto the broker
+             and returns a ``Result`` wrapper.
+          3. Use ``task_instance.id`` as the engine-native id.
         """
         registry = getattr(self.huey, "_registry", None)
         callable_obj = None
@@ -287,8 +303,22 @@ class HueyEngineAdapter:
                 error=f"registry entry for {name!r} is not a Huey task",
             )
         try:
-            result = callable_obj(*args, **(kwargs or {}))
-            new_id = getattr(result, "id", None)
+            init_kwargs: dict[str, Any] = {
+                "args": tuple(args),
+                "kwargs": dict(kwargs or {}),
+            }
+            # ``eta`` arrives as epoch seconds (Protocol contract); Huey
+            # accepts a ``datetime`` for ``eta``. Defer the import so
+            # this path stays cheap when eta isn't supplied.
+            if eta is not None:
+                from datetime import UTC, datetime
+
+                init_kwargs["eta"] = datetime.fromtimestamp(eta, tz=UTC)
+            if priority is not None:
+                init_kwargs["priority"] = priority
+            task_instance = callable_obj(**init_kwargs)
+            self.huey.enqueue(task_instance)
+            new_id = getattr(task_instance, "id", None)
         except Exception as exc:  # noqa: BLE001
             return CommandResult(status="failed", error=str(exc))
         return CommandResult(

@@ -7,6 +7,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-04-28
+
+### Fixed
+
+- **``submit_task`` now actually enqueues on Huey 2.x and 3.x.** Pre-1.1 the adapter called ``callable_obj(*args, **kwargs)`` against the registry entry, which works only if Huey stores the ``TaskWrapper`` decorator in ``_registry._registry``. Both supported Huey lines actually store the underlying ``Task`` **subclass** there, and instantiating the class with task args directly trips ``Task.__init__()`` (which accepts ``args``/``kwargs`` as keyword tuples, not splatted task arguments). The brain-side z4j-scheduler 1.1.0 ``schedule.fire`` dispatcher relies on this method, so the bug surfaced as ``Task.__init__() got an unexpected keyword argument 'X'`` for every Huey-backed scheduled task. New flow: instantiate ``Task(args=..., kwargs=..., eta=..., priority=...)`` then ``huey.enqueue(task_instance)``. Returns ``task_instance.id`` as the engine-native id. Verified end-to-end in docker (huey-app project, 113/113 fires completed at 100%).
+
+### Changed
+
+- Bumped minimum ``z4j-core`` to ``>=1.1.0`` for the v1.1.0 ecosystem family release.
+
 ## [1.0.1] - 2026-04-21
 
 ### Changed
