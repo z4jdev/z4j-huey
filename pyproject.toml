@@ -1,6 +1,6 @@
 [project]
 name = "z4j-huey"
-version = "1.1.0"
+version = "1.1.2"
 description = "z4j Huey queue engine adapter (Apache 2.0)"
 readme = "README.md"
 requires-python = ">=3.11"
@@ -24,6 +24,14 @@ dependencies = [
     "z4j-core>=1.1.0,<2.0",
     "huey>=2.5,<3",
 ]
+
+[project.scripts]
+# 1.1.2+ console script. Both ``z4j-huey`` (pip-installed entry
+# point) and ``python -m z4j_huey`` (module form) work and
+# dispatch to the same code path. Engine adapters are libraries,
+# so the CLI is doctor / check / status / version only - no
+# ``run`` or ``restart`` (those belong to framework adapters).
+z4j-huey = "z4j_huey.cli:main"
 
 [project.urls]
 Changelog = "https://github.com/z4jdev/z4j-huey/blob/main/CHANGELOG.md"
