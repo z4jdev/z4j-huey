@@ -41,7 +41,7 @@ pip install z4j-bare    z4j-huey z4j-hueyperiodic   # framework-free worker
 
 ## Pairs with
 
-- [`z4j-hueyperiodic`](https://github.com/z4jdev/z4j-hueyperiodic) — schedule adapter for Huey `@periodic_task`
+- [`z4j-hueyperiodic`](https://github.com/z4jdev/z4j-hueyperiodic), schedule adapter for Huey `@periodic_task`
 
 ## Reliability
 
@@ -56,7 +56,7 @@ Full docs at [z4j.dev/engines/huey/](https://z4j.dev/engines/huey/).
 
 ## License
 
-Apache-2.0 — see [LICENSE](LICENSE).
+Apache-2.0, see [LICENSE](LICENSE).
 
 ## Links
 

@@ -282,9 +282,9 @@ class HueyEngineAdapter:
         ``Task.__init__() got an unexpected keyword argument 'X'`` for
         every Huey-backed scheduled task. New flow:
           1. Instantiate the Task class with ``(args=..., kwargs=...,
-             eta=..., priority=...)`` — Huey's documented constructor
+             eta=..., priority=...)``, Huey's documented constructor
              shape across 2.x and 3.x.
-          2. ``huey.enqueue(task_instance)`` — pushes onto the broker
+          2. ``huey.enqueue(task_instance)``, pushes onto the broker
              and returns a ``Result`` wrapper.
           3. Use ``task_instance.id`` as the engine-native id.
         """
