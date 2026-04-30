@@ -6,10 +6,23 @@
 
 The Huey engine adapter for [z4j](https://z4j.com).
 
-Streams Huey task lifecycle events to the z4j brain and accepts
-control actions (retry, cancel, bulk retry, purge) from the
-dashboard. Pair with z4j-hueyperiodic to surface @periodic_task
-schedules.
+Streams every Huey task lifecycle event from your consumers to the z4j
+brain and accepts operator control actions from the dashboard. Pair
+with z4j-hueyperiodic to surface `@periodic_task` schedules.
+
+## What it ships
+
+| Capability | Notes |
+|---|---|
+| Task lifecycle events | enqueued, started, succeeded, failed, retried, revoked |
+| Task discovery | runtime registry merge + static scan |
+| Submit / retry / cancel | direct against the Huey instance |
+| Bulk retry | filter-driven; re-enqueues matching tasks |
+| Purge queue | with confirm-token guard |
+| Reconcile task | via Huey's storage introspection |
+
+Supports Huey 2.x and 3.x. Works with the redis, sqlite, and in-memory
+storage backends.
 
 ## Install
 
@@ -17,9 +30,25 @@ schedules.
 pip install z4j-huey z4j-hueyperiodic
 ```
 
+Pair with a framework adapter:
+
+```bash
+pip install z4j-django  z4j-huey z4j-hueyperiodic   # Django
+pip install z4j-flask   z4j-huey z4j-hueyperiodic   # Flask
+pip install z4j-fastapi z4j-huey z4j-hueyperiodic   # FastAPI
+pip install z4j-bare    z4j-huey z4j-hueyperiodic   # framework-free worker
+```
+
 ## Pairs with
 
-- [`z4j-hueyperiodic`](https://github.com/z4jdev/z4j-hueyperiodic) — schedule adapter for Huey @periodic_task
+- [`z4j-hueyperiodic`](https://github.com/z4jdev/z4j-hueyperiodic) — schedule adapter for Huey `@periodic_task`
+
+## Reliability
+
+- No exception from the adapter ever propagates back into Huey hooks
+  or your task code.
+- Events buffer locally when the brain is unreachable; consumers never
+  block on network I/O.
 
 ## Documentation
 
