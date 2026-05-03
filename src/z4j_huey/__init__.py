@@ -13,6 +13,6 @@ from __future__ import annotations
 
 from z4j_huey.engine import HueyEngineAdapter
 
-__version__ = "1.3.0"
+__version__ = "1.4.0"
 
 __all__ = ["HueyEngineAdapter", "__version__"]

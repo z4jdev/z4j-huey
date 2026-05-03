@@ -47,7 +47,7 @@ pip install z4j-bare    z4j-huey z4j-hueyperiodic   # framework-free worker
 
 - No exception from the adapter ever propagates back into Huey hooks
   or your task code.
-- Events buffer locally when the brain is unreachable; consumers never
+- Events buffer locally when z4j is unreachable; consumers never
   block on network I/O.
 
 ## Documentation
