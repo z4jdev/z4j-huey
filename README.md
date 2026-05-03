@@ -1,8 +1,8 @@
 # z4j-huey
 
-[![PyPI version](https://img.shields.io/pypi/v/z4j-huey.svg)](https://pypi.org/project/z4j-huey/)
-[![Python](https://img.shields.io/pypi/pyversions/z4j-huey.svg)](https://pypi.org/project/z4j-huey/)
-[![License](https://img.shields.io/pypi/l/z4j-huey.svg)](https://github.com/z4jdev/z4j-huey/blob/main/LICENSE)
+[![PyPI version](https://img.shields.io/pypi/v/z4j-huey.svg?v=1.4.0)](https://pypi.org/project/z4j-huey/)
+[![Python](https://img.shields.io/pypi/pyversions/z4j-huey.svg?v=1.4.0)](https://pypi.org/project/z4j-huey/)
+[![License](https://img.shields.io/pypi/l/z4j-huey.svg?v=1.4.0)](https://github.com/z4jdev/z4j-huey/blob/main/LICENSE)
 
 The Huey engine adapter for [z4j](https://z4j.com).
 
