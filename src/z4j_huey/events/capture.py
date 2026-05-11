@@ -35,7 +35,7 @@ from uuid import uuid4
 from z4j_core.models import Event
 from z4j_core.models.event import EventKind
 
-logger = logging.getLogger("z4j.agent.huey.events")
+logger = logging.getLogger("z4j.adapter.huey.events")
 
 ENGINE_NAME = "huey"
 

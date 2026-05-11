@@ -35,7 +35,7 @@ from z4j_core.version import PROTOCOL_VERSION
 
 from z4j_huey.capabilities import DEFAULT_CAPABILITIES
 
-logger = logging.getLogger("z4j.agent.huey.engine")
+logger = logging.getLogger("z4j.adapter.huey.engine")
 
 ENGINE_NAME = "huey"
 
@@ -370,7 +370,7 @@ class HueyEngineAdapter:
                     "override_kwargs to look up the registered callable"
                 ),
             )
-        # Defense-in-depth (audit M4): make sure what came back from
+        # Defense-in-depth: make sure what came back from
         # the registry is actually a Huey-decorated task, not some
         # stray attribute or third-party patch. A future Huey internal
         # change or a buggy plugin that injects non-task entries
